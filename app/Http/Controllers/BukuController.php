@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use App\Models\Buku;
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
@@ -16,6 +17,10 @@ class BukuController extends Controller
         $jumlah_buku = Buku::count();
         $total_harga = $data_buku->sum('harga');
         return view('buku.index', compact('data_buku', 'jumlah_buku', 'total_harga'));
+
+        Storage::disk(‘local’)->put(‘file.txt’, ‘Contents’);
+        $contents = Storage::get(hujan.jpg’);
+        $exists = Storage::disk(‘local’)->exists(hujan.jpg’);
 
     }
 
@@ -41,14 +46,27 @@ class BukuController extends Controller
             'judul' => 'required|string',
             'penulis' => 'required|string|max:30',
             'harga' => 'required|numeric',
-            'tgl_terbit' =>'required|date'
+            'tgl_terbit' =>'required|date',
+            'foto' => 'image|nullable|max:1999'
         ]);
+
+        if ($request->hasFile('foto')) {
+            $filenameWithExt = $request->file('foto')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('foto')->getClientOriginalExtension();
+            $fileNameSimpan = $filename.'_'.time().'.'.$extension;
+            // $request->file('foto')->storeAs('public', $fileNameSimpan);
+
+            $path = $request->file('foto')->storeAs('public/fotos', $fileNameSimpan);
+        }
 
         $buku = new Buku();
         $buku->judul = $request->judul;
         $buku->penulis = $request->penulis;
         $buku->harga = $request->harga;
         $buku->tgl_terbit = $request->tgl_terbit;
+        $buku->foto = $path;
+        // $buku->foto = $fileNameSimpan?? null;
         $buku->save();
 
         return redirect('/buku')->with('pesan', 'Data buku berhasil di simpan');

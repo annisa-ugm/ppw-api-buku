@@ -7,14 +7,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class LoginRegisterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest')->except([
-            'logout', 'dashboard'
-        ]);
+
     }
 
     public function register()
@@ -24,22 +23,20 @@ class LoginRegisterController extends Controller
 
 
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:250',
-        'email' => 'required|email|max:250|unique:users',
-        'password' => 'required|min:8|confirmed',
-    ]);
-
-    User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
-
-    // Redirect to login page instead of logging in
-    return redirect()->route('login')->with('success', 'Registration successful! Please login.');
-}
+    {
+        $request->validate([
+            'name' => 'required|string|max:250',
+            'email' => 'required|email|max:250|unique:users',
+            'password' => 'required|min:8|confirmed',
+        ]);
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'level' => 'user',
+        ]);
+        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
+    }
 
 
     public function login()
@@ -49,22 +46,22 @@ class LoginRegisterController extends Controller
 
 
     public function authenticate(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        return redirect()->route('buku.index')
-            ->with('success', 'You have been logged in!');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('buku.index')
+                ->with('success', 'You have been logged in!');
+        }
+
+        return back()->withErrors([
+            'email' => 'Your provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
-
-    return back()->withErrors([
-        'email' => 'Your provided credentials do not match our records.',
-    ])->onlyInput('email');
-}
 
     public function logout(Request $request)
     {

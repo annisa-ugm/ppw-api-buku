@@ -7,7 +7,9 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="text-center">Daftar Buku</h2>
             @auth
-            <a href="{{ route('buku.create') }}" class="btn btn-primary">Tambah Buku</a>
+                @if (Auth::user()->level === 'admin')
+                    <a href="{{ route('buku.create') }}" class="btn btn-primary">Tambah Buku</a>
+                @endif
             @endauth
         </div>
 
@@ -30,9 +32,12 @@
                     <th>Harga</th>
                     <th>Tanggal Terbit</th>
                     @auth
-                    <th>Update</th>
-                    <th>Delete</th>
+                        @if (Auth::user()->level === 'admin')
+                            <th>Update</th>
+                            <th>Delete</th>
+                        @endif
                     @endauth
+
                 </tr>
             </thead>
             <tbody>
@@ -44,16 +49,18 @@
                         <td>{{ "Rp. ".number_format($buku->harga, 0, ',', '.') }}</td>
                         <td>{{ $buku->tgl_terbit->format('d/m/Y') }}</td>
                         @auth
-                        <td>
-                            <a class="btn btn-warning" href="{{ route('buku.edit', $buku->id) }}">Update</a>
-                        </td>
-                        <td>
-                            <form action="{{ route('buku.destroy', $buku->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button onclick="return confirm('Yakin mau di hapus?')" type="submit" class="btn btn-danger">Hapus</button>
-                            </form>
-                        </td>
+                            @if (Auth::user()->level === 'admin')
+                                <td>
+                                    <a class="btn btn-warning" href="{{ route('buku.edit', $buku->id) }}">Update</a>
+                                </td>
+                                <td>
+                                    <form action="{{ route('buku.destroy', $buku->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button onclick="return confirm('Yakin mau di hapus?')" type="submit" class="btn btn-danger">Hapus</button>
+                                    </form>
+                                </td>
+                            @endif
                         @endauth
                     </tr>
                 @endforeach

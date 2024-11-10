@@ -8,10 +8,6 @@ class Buku extends Model
 {
     use HasFactory;
     protected $table = 'bukus';
-    protected $fillable = ['judul', 'penulis', 'harga', 'tgl_terbit'];
+    protected $fillable = ['foto', 'judul', 'penulis', 'harga', 'tgl_terbit'];
     protected $casts = ['tgl_terbit' => 'datetime'];
 }
-
-//representasi dari tabel database yg dukung operasi db
-//kaya baca, update, dan hapus data tanpa tulis kueri manual
-
