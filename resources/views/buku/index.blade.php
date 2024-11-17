@@ -1,3 +1,16 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Buku</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+</head>
+
+<body>
+
+
 @extends('auth.layouts')
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -27,6 +40,7 @@
             <thead class="table-primary text-center">
                 <tr>
                     <th>Nomor</th>
+                    <th>Foto</th>
                     <th>Judul</th>
                     <th>Penulis</th>
                     <th>Harga</th>
@@ -37,13 +51,16 @@
                             <th>Delete</th>
                         @endif
                     @endauth
-
+                    <th>Detail</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($data_buku as $index => $buku)
                     <tr>
                         <td>{{ $index + 1 }}</td>
+                        <td>
+                            <img src="{{ asset('storage/public/foto/' . $buku->foto_square) }}" style="width: 150px">
+                        </td>
                         <td>{{ $buku->judul }}</td>
                         <td>{{ $buku->penulis }}</td>
                         <td>{{ "Rp. ".number_format($buku->harga, 0, ',', '.') }}</td>
@@ -62,6 +79,9 @@
                                 </td>
                             @endif
                         @endauth
+                        <td>
+                            <a class="btn btn-info" href="{{ route('buku.show', $buku->id) }}">Detail</a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -80,3 +100,5 @@
         });
     });
 </script>
+</body>
+</html>

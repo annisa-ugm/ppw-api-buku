@@ -36,6 +36,9 @@
                             <button type="submit" class="btn btn-outline-danger">Logout</button>
                         </form>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ (request()->is('gallery')) ? 'active' : '' }}" href="{{ route('gallery.index') }}">Gallery</a>
+                    </li>
                 @endguest
             </ul>
           </div>

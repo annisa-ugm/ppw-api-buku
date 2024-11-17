@@ -8,6 +8,7 @@ class Buku extends Model
 {
     use HasFactory;
     protected $table = 'bukus';
-    protected $fillable = ['foto', 'judul', 'penulis', 'harga', 'tgl_terbit'];
+    protected $fillable = ['judul', 'penulis', 'harga', 'tgl_terbit', 'foto', 'foto_square'];
     protected $casts = ['tgl_terbit' => 'datetime'];
 }
+
