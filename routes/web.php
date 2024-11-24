@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\LoginRegisterController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\GalleryController;
@@ -22,6 +23,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/buku', [BukuController::class, 'index'])->name('buku.index');
 });
 
+Route::get('/books', function () {
+    return view('buku.listbuku');
+});
 
 // Rute untuk registrasi dan login
 Route::get('/register', [LoginRegisterController::class, 'register'])->name('register');
